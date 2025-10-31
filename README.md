@@ -1,9 +1,9 @@
-DonateContract
+# DonateContract
 
 DonateContract is a simple Solidity smart contract designed as a donation vault on EVM-compatible blockchains (e.g., used with the Hardhat + FHEVM template).
 Its purpose is to allow anyone to send (donate) ETH (or the network’s native token) to the contract while keeping track of the total amount donated.
 
-Key Features
+# Key Features
 
 Owner setup: When deployed, the contract assigns the owner (usually the deployer) with special privileges.
 
@@ -15,7 +15,7 @@ Withdrawal: The owner can withdraw or reclaim the donated funds (if a withdraw o
 
 Events: The contract may emit events for every donation, making it easy to track donations off-chain or through a frontend.
 
-Highlights
+# Highlights
 
 Built with Solidity ≥ 0.8.x, benefiting from built-in overflow protection and newer language security improvements.
 
@@ -31,7 +31,7 @@ Consider adding extra security layers like withdrawal limits, time locks, or enh
 
 Use standard access-control libraries (e.g., OpenZeppelin’s Ownable) for production.
 
-Quick Usage
+# Quick Usage
 
 Clone the repository and open fhevm-hardhat-template/contracts/DonateContract.sol.
 
@@ -43,7 +43,7 @@ Deploy to your target network (e.g., FHEVM, Ethereum testnet, or a local node).
 
 Users can call the donate function to send ETH, while the owner can view or withdraw total funds.
 
-Possible Extensions
+#  Possible Extensions
 
 Support ERC20 tokens in addition to native tokens.
 
