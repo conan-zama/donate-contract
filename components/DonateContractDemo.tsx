@@ -121,7 +121,7 @@ export const DonateContractDemo = () => {
         ) : donateContract.campaignActive ? (
           <div className="p-6 rounded-2xl bg-yellow-50 border-2 border-yellow-600 text-center">
             <p className="text-yellow-800 font-semibold">
-              No progress data yet. Click "Request Progress" to decrypt.
+              No progress data yet. Click 'Request Progress' to decrypt.
             </p>
           </div>
         ) : (
