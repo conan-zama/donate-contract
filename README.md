@@ -1,171 +1,54 @@
-# Sealed Bid Auction with FHEVM - README
-This project implements a Confidential Sealed-Bid Auction using the Fully Homomorphic Encryption Virtual Machine (FHEVM). It allows users to place encrypted bids on an auction item, ensuring privacy until the auction ends. The admin manages the auction lifecycle, and bids are decrypted only when necessary, leveraging FHE for secure computation.
-# Table of Contents
+DonateContract
 
-Overview
-Features
-Prerequisites
-Setup Instructions
-Usage
-Smart Contract Details
-Frontend Details
-Troubleshooting
+DonateContract is a simple Solidity smart contract designed as a donation vault on EVM-compatible blockchains (e.g., used with the Hardhat + FHEVM template).
+Its purpose is to allow anyone to send (donate) ETH (or the network’s native token) to the contract while keeping track of the total amount donated.
 
-# Overview
-The SealedBidAuction smart contract is deployed on a blockchain network supporting FHEVM (e.g., Zama's Sepolia testnet). It enables a first-price sealed-bid auction where:
+Key Features
 
-Bids are encrypted using FHE to ensure confidentiality.
-Users deposit a public amount that must cover their encrypted bid.
-The admin starts and ends the auction, requests decryption of the highest bid, and withdraws proceeds.
-Losers receive full refunds, while the winner's deposit is refunded minus their bid amount.
+Owner setup: When deployed, the contract assigns the owner (usually the deployer) with special privileges.
 
-The frontend, built with React and TypeScript, integrates with MetaMask and ethers.js to interact with the smart contract.
+Donations: Anyone can send native tokens (ETH) to the contract via a payable donate function.
 
-# Features
+Tracking total donations: The contract stores and updates a totalDonations variable each time someone donates.
 
-Encrypted Bidding: Bids are encrypted using FHE, ensuring privacy during the auction.
-Admin Controls: The admin can start, end, and reset auctions, set auction items, and withdraw proceeds.
-User Actions: Users can place bids with deposits, request refunds, and view auction status.
-Event-Driven Updates: Real-time updates via contract events (e.g., AuctionStarted, AuctionWinnerAnnounced).
-Responsive UI: A clean React-based interface for interacting with the auction.
+Withdrawal: The owner can withdraw or reclaim the donated funds (if a withdraw or similar function is implemented).
 
-# Prerequisites
+Events: The contract may emit events for every donation, making it easy to track donations off-chain or through a frontend.
 
-Node.js: Version 18 or higher.
-MetaMask: Installed in your browser and connected to a supported network (e.g., Zama Sepolia).
-Yarn or npm: For managing dependencies.
-FHEVM Environment: Access to an FHEVM-compatible blockchain (e.g., Zama's Sepolia testnet).
-ETH for Gas Fees: Testnet ETH for transactions on the target network.
+Highlights
 
-# Setup Instructions
+Built with Solidity ≥ 0.8.x, benefiting from built-in overflow protection and newer language security improvements.
 
-Clone the Repository:
-git clone <repository-url>
-cd sealed-bid-auction
+Because the contract handles funds, ownership and withdrawal logic must be carefully controlled — only the authorized owner should be able to withdraw.
 
+The code is intentionally simple — ideal as a boilerplate for small donation-based projects, hackathons, or tutorials.
 
-# Install Dependencies:
-yarn install
+Before deploying to mainnet:
 
-or
-npm install
+Always test thoroughly on a testnet.
 
+Consider adding extra security layers like withdrawal limits, time locks, or enhanced event logging.
 
-# Configure Environment:
+Use standard access-control libraries (e.g., OpenZeppelin’s Ownable) for production.
 
-Ensure MetaMask is connected to the correct network (e.g., Zama Sepolia).
-Update the SealedBidAuctionAddresses.ts file with the deployed contract address for your target chain ID.
+Quick Usage
 
+Clone the repository and open fhevm-hardhat-template/contracts/DonateContract.sol.
 
-# Run the Application:
-yarn start
+Review and modify variables or functions (for example, customize the owner or add more events).
 
-or
-npm start
+Compile and test with Hardhat or your preferred framework.
 
-The app will be available at http://localhost:3000.
+Deploy to your target network (e.g., FHEVM, Ethereum testnet, or a local node).
 
-Deploy the Smart Contract (if not already deployed):
+Users can call the donate function to send ETH, while the owner can view or withdraw total funds.
 
-Use tools like Hardhat or Remix to deploy SealedBidAuction.sol to an FHEVM-compatible network.
-Update SealedBidAuctionAddresses.ts with the deployed contract address.
+Possible Extensions
 
+Support ERC20 tokens in addition to native tokens.
 
+Add fund release logic — conditional disbursement based on milestones, time, or donor count.
 
-# Usage
+Build a simple frontend UI for one-click donations.
 
-Connect MetaMask:
-
-Click "Connect to MetaMask" to link your wallet.
-Ensure you're on the correct network (e.g., Zama Sepolia).
-
-
-Admin Actions:
-
-Start Auction: Set a duration (in seconds) and click "Start Auction" to begin. The first user to start an auction becomes the admin.
-Set Auction Item: Enter an item description and click "Set Auction Item".
-End Auction: Click "End Auction" to stop bidding.
-Request Decryption: After the auction ends, click "Request Decryption" to reveal the winner and highest bid.
-Reset Auction: Click "Reset Auction" to clear the auction state and start a new auction.
-Withdraw Proceeds: Click "Withdraw Proceeds" to retrieve accumulated winning bids.
-
-
-User Actions:
-
-Place Bid: Enter a bid amount and deposit amount (in wei), then click "Place Bid". The deposit must be at least the bid amount.
-Refund: After the auction ends and the winner is announced, click "Refund" to retrieve your deposit (full refund for losers, deposit minus bid for the winner).
-
-
-View Auction State:
-
-The UI displays the auction item, start/end times, user deposit, winner, and winning amount.
-Use the "Refresh State" button to update the auction state manually.
-
-
-
-# Smart Contract Details
-The SealedBidAuction.sol contract includes:
-
-Modifiers:
-onlyAdmin: Restricts actions to the admin.
-onlyDuringAuction: Ensures bids are placed during the active auction period.
-onlyAfterAuction: Restricts actions like refunds and decryption to post-auction.
-
-
-Key Functions:
-setAuctionItem: Sets the auction item (admin only).
-startAuction: Starts the auction and sets the caller as admin.
-placeBid: Allows users to place encrypted bids with a deposit.
-endAuction: Ends the auction (admin only).
-requestDecryption: Requests decryption of the highest bid and bidder (admin only).
-refund: Refunds deposits after the winner is announced.
-resetAuction: Resets the auction state (admin only).
-withdrawTotalProceeds: Withdraws accumulated proceeds (admin only).
-
-
-Events:
-AuctionStarted: Emitted when the auction starts.
-AuctionWinnerAnnounced: Emitted when the winner and amount are decrypted.
-TotalProceedsWithdrawn: Emitted when proceeds are withdrawn.
-
-
-
-# Frontend Details
-The frontend is built with React, TypeScript, and ethers.js, using the following key files:
-
-useSealedBidAuction.tsx: A custom React hook for interacting with the SealedBidAuction contract.
-SealedBidAuctionDemo.tsx: The main component rendering the auction UI.
-Dependencies:
-ethers: For Ethereum interactions.
-fhevm: For FHE encryption/decryption.
-useMetaMaskEthersSigner: Custom hook for MetaMask integration.
-useInMemoryStorage: Manages FHEVM decryption signatures.
-
-
-
-The UI includes:
-
-Chain Info: Displays chain ID, MetaMask accounts, contract address, and admin status.
-Auction State: Shows auction item, start/end times, user deposit, winner, and winning amount.
-Action Buttons: For starting/ending auctions, placing bids, requesting decryption, refunds, and withdrawing proceeds.
-
-# Troubleshooting
-
-MetaMask Connection Issues:
-Ensure MetaMask is installed and unlocked.
-Verify the correct network is selected in MetaMask.
-
-
-# Contract Not Deployed:
-Check SealedBidAuctionAddresses.ts for the correct contract address.
-Deploy the contract if it hasn't been deployed yet.
-
-
-# FHEVM Errors:
-Ensure the fhevm library is properly initialized.
-Verify the network supports FHEVM (e.g., Zama Sepolia).
-
-
-# Transaction Failures:
-Check for sufficient gas and ETH in your wallet.
-Review console logs for error messages from useSealedBidAuction.
+Include audit and security review before real-world deployment.
