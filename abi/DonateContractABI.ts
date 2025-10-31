@@ -1,4 +1,5 @@
-export const SealedBidAuctionABI = {
+// src/abi/DonateContractABI.ts
+export const DonateContractABI = {
   abi: [
     {
       "inputs": [],
@@ -26,23 +27,42 @@ export const SealedBidAuctionABI = {
         {
           "indexed": true,
           "internalType": "address",
-          "name": "admin",
+          "name": "owner",
           "type": "address"
         },
         {
           "indexed": false,
-          "internalType": "uint256",
-          "name": "startTime",
-          "type": "uint256"
+          "internalType": "uint128",
+          "name": "finalAmount",
+          "type": "uint128"
+        }
+      ],
+      "name": "CampaignEnded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint128",
+          "name": "total",
+          "type": "uint128"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint128",
+          "name": "target",
+          "type": "uint128"
         },
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "endTime",
+          "name": "percentage",
           "type": "uint256"
         }
       ],
-      "name": "AuctionStarted",
+      "name": "CampaignProgress",
       "type": "event"
     },
     {
@@ -51,17 +71,17 @@ export const SealedBidAuctionABI = {
         {
           "indexed": true,
           "internalType": "address",
-          "name": "winner",
+          "name": "owner",
           "type": "address"
         },
         {
           "indexed": false,
-          "internalType": "uint64",
-          "name": "winningAmount",
-          "type": "uint64"
+          "internalType": "euint128",
+          "name": "target",
+          "type": "bytes32"
         }
       ],
-      "name": "AuctionWinnerAnnounced",
+      "name": "CampaignStarted",
       "type": "event"
     },
     {
@@ -83,35 +103,138 @@ export const SealedBidAuctionABI = {
         {
           "indexed": true,
           "internalType": "address",
-          "name": "admin",
+          "name": "donor",
           "type": "address"
         },
         {
           "indexed": false,
-          "internalType": "uint64",
+          "internalType": "euint128",
           "name": "amount",
-          "type": "uint64"
+          "type": "bytes32"
         }
       ],
-      "name": "TotalProceedsWithdrawn",
+      "name": "Donation",
       "type": "event"
     },
     {
-      "inputs": [],
-      "name": "admin",
-      "outputs": [
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "euint128",
+          "name": "newTarget",
+          "type": "bytes32"
+        }
+      ],
+      "name": "TargetUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "euint128",
+          "name": "amount",
+          "type": "bytes32"
+        }
+      ],
+      "name": "WithdrawalRequested",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint128",
+          "name": "amount",
+          "type": "uint128"
+        }
+      ],
+      "name": "Withdrawn",
+      "type": "event"
+    },
+    {
+      "inputs": [
         {
           "internalType": "address",
-          "name": "",
+          "name": "donor",
           "type": "address"
+        }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+        {
+          "internalType": "euint128",
+          "name": "",
+          "type": "bytes32"
         }
       ],
       "stateMutability": "view",
       "type": "function"
     },
     {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "requestId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes",
+          "name": "cleartexts",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "proof",
+          "type": "bytes"
+        }
+      ],
+      "name": "callbackEndCampaign",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "requestId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes",
+          "name": "cleartexts",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "proof",
+          "type": "bytes"
+        }
+      ],
+      "name": "callbackProgress",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
       "inputs": [],
-      "name": "auctionEnded",
+      "name": "campaignActive",
       "outputs": [
         {
           "internalType": "bool",
@@ -124,164 +247,12 @@ export const SealedBidAuctionABI = {
     },
     {
       "inputs": [],
-      "name": "auctionItem",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "auctionStarted",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "requestId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "bytes",
-          "name": "cleartexts",
-          "type": "bytes"
-        },
-        {
-          "internalType": "bytes",
-          "name": "decryptionProof",
-          "type": "bytes"
-        }
-      ],
-      "name": "callbackDecryptAmount",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "requestId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "bytes",
-          "name": "cleartexts",
-          "type": "bytes"
-        },
-        {
-          "internalType": "bytes",
-          "name": "decryptionProof",
-          "type": "bytes"
-        }
-      ],
-      "name": "callbackDecryptBidder",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "requestId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "bytes",
-          "name": "cleartexts",
-          "type": "bytes"
-        },
-        {
-          "internalType": "bytes",
-          "name": "decryptionProof",
-          "type": "bytes"
-        }
-      ],
-      "name": "callbackDecryptTotalAmount",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "decryptedTotalWinningAmount",
-      "outputs": [
-        {
-          "internalType": "uint64",
-          "name": "",
-          "type": "uint64"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "name": "deposits",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "endAuction",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "endTime",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getWinnerInfo",
+      "name": "charityOwner",
       "outputs": [
         {
           "internalType": "address",
           "name": "",
           "type": "address"
-        },
-        {
-          "internalType": "uint64",
-          "name": "",
-          "type": "uint64"
         }
       ],
       "stateMutability": "view",
@@ -290,71 +261,31 @@ export const SealedBidAuctionABI = {
     {
       "inputs": [
         {
-          "internalType": "externalEuint64",
-          "name": "encryptedBid",
+          "internalType": "externalEuint128",
+          "name": "encryptedAmount",
           "type": "bytes32"
         },
         {
           "internalType": "bytes",
-          "name": "inputProof",
+          "name": "amountProof",
           "type": "bytes"
         }
       ],
-      "name": "placeBid",
+      "name": "donate",
       "outputs": [],
       "stateMutability": "payable",
       "type": "function"
     },
     {
       "inputs": [],
-      "name": "refund",
+      "name": "endCampaign",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
       "inputs": [],
-      "name": "requestDecryption",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "resetAuction",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "_item",
-          "type": "string"
-        }
-      ],
-      "name": "setAuctionItem",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_duration",
-          "type": "uint256"
-        }
-      ],
-      "name": "startAuction",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "startTime",
+      "name": "protocolId",
       "outputs": [
         {
           "internalType": "uint256",
@@ -362,17 +293,48 @@ export const SealedBidAuctionABI = {
           "type": "uint256"
         }
       ],
-      "stateMutability": "view",
+      "stateMutability": "pure",
       "type": "function"
     },
     {
       "inputs": [],
-      "name": "winner",
+      "name": "requestProgress",
       "outputs": [
         {
-          "internalType": "address",
+          "internalType": "uint256",
+          "name": "requestId",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "externalEuint128",
+          "name": "encryptedTarget",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes",
+          "name": "targetProof",
+          "type": "bytes"
+        }
+      ],
+      "name": "startCampaign",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "targetAmount",
+      "outputs": [
+        {
+          "internalType": "euint128",
           "name": "",
-          "type": "address"
+          "type": "bytes32"
         }
       ],
       "stateMutability": "view",
@@ -380,20 +342,31 @@ export const SealedBidAuctionABI = {
     },
     {
       "inputs": [],
-      "name": "winningAmount",
+      "name": "totalDonations",
       "outputs": [
         {
-          "internalType": "uint64",
+          "internalType": "euint128",
           "name": "",
-          "type": "uint64"
+          "type": "bytes32"
         }
       ],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [],
-      "name": "withdrawTotalProceeds",
+      "inputs": [
+        {
+          "internalType": "externalEuint128",
+          "name": "encryptedTarget",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes",
+          "name": "targetProof",
+          "type": "bytes"
+        }
+      ],
+      "name": "updateTarget",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
